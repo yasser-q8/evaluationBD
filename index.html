@@ -11,19 +11,17 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         :root {
-            --primary-color: #D4AF37; /* ذهبي */
-            --secondary-color: #FFD700; /* أصفر ذهبي */
-            --yellow-dark: #B8860B;
-            --yellow-medium: #FFC107;
-            --yellow-light: #FFF8DC;
+            --primary-color: #FFA500;
+            --secondary-color: #FFD700;
             --success-color: #27ae60;
             --warning-color: #f39c12;
             --danger-color: #e74c3c;
             --gold-color: #ffd700;
             --light-bg: #f8f9fa;
             --border-color: #dee2e6;
-            --yellow-light-bg: #fffce6;
-            --yellow-medium-bg: #fff9e6;
+            --yellow-light: #fff9e6;
+            --yellow-medium: #ffeb99;
+            --yellow-dark: #cc8400;
         }
         
         * {
@@ -53,7 +51,7 @@
             color: white;
             padding: 15px 0;
             text-align: center;
-            border-bottom: 5px solid var(--primary-color);
+            border-bottom: 5px solid var(--gold-color);
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
             margin-bottom: 25px;
         }
@@ -242,25 +240,25 @@
         .axis-box.top-left {
             top: 15%;
             right: 10%;
-            border-color: #D4AF37;
+            border-color: #FFD700;
         }
         
         .axis-box.top-right {
             top: 15%;
             left: 10%;
-            border-color: #FFD700;
+            border-color: #FFA500;
         }
         
         .axis-box.bottom-left {
             bottom: 15%;
             right: 10%;
-            border-color: #B8860B;
+            border-color: #E6B800;
         }
         
         .axis-box.bottom-right {
             bottom: 15%;
             left: 10%;
-            border-color: #FFC107;
+            border-color: #FF8C00;
         }
         
         .axis-title {
@@ -316,8 +314,8 @@
             100% { transform: translateY(0px); }
         }
         
-        .stat-card.red { background-color: #ffeaea; border-top: 5px solid var(--danger-color); }
-        .stat-card.yellow { background-color: var(--yellow-light-bg); border-top: 5px solid var(--secondary-color); }
+        .stat-card.yellow { background-color: var(--yellow-light); border-top: 5px solid var(--warning-color); }
+        .stat-card.orange { background-color: #fff4e6; border-top: 5px solid #ff9800; }
         .stat-card.green { background-color: #e8f7ef; border-top: 5px solid var(--success-color); }
         .stat-card.gold { background-color: #fffce6; border-top: 5px solid var(--gold-color); }
         
@@ -328,66 +326,6 @@
         }
         
         .stat-label {
-            font-size: 14px;
-            color: #666;
-        }
-        
-        /* لوحة التحكم */
-        .dashboard-panel {
-            background-color: white;
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 25px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-        }
-        
-        .dashboard-title {
-            text-align: center;
-            margin-bottom: 20px;
-            color: var(--primary-color);
-            font-size: 22px !important;
-            font-weight: bold;
-        }
-        
-        .dashboard-stats {
-            display: flex;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 15px;
-        }
-        
-        .dashboard-card {
-            flex: 1;
-            min-width: 180px;
-            background: linear-gradient(135deg, var(--yellow-light), var(--yellow-medium-bg));
-            border-radius: 8px;
-            padding: 15px;
-            text-align: center;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            border-left: 5px solid var(--primary-color);
-            animation: float 6s ease-in-out infinite;
-        }
-        
-        .dashboard-card:nth-child(2) {
-            animation-delay: 0.5s;
-        }
-        
-        .dashboard-card:nth-child(3) {
-            animation-delay: 1s;
-        }
-        
-        .dashboard-card:nth-child(4) {
-            animation-delay: 1.5s;
-        }
-        
-        .dashboard-card .value {
-            font-size: 32px;
-            font-weight: bold;
-            color: var(--yellow-dark);
-            margin: 10px 0;
-        }
-        
-        .dashboard-card .label {
             font-size: 14px;
             color: #666;
         }
@@ -434,12 +372,11 @@
         }
         
         .criteria-table th {
-            background-color: var(--secondary-color);
+            background-color: var(--light-bg);
             padding: 12px;
             text-align: center;
             border: 1px solid var(--border-color);
             font-size: 13px;
-            color: #333;
         }
         
         .criteria-table td {
@@ -548,7 +485,7 @@
         
         .results-table th {
             background-color: var(--secondary-color);
-            color: #333;
+            color: white;
             padding: 14px;
             text-align: center;
             font-size: 15px;
@@ -606,12 +543,12 @@
         }
         
         .btn-primary {
-            background-color: var(--primary-color);
+            background-color: var(--secondary-color);
             color: white;
         }
         
         .btn-primary:hover {
-            background-color: var(--yellow-dark);
+            background-color: #FFA500;
         }
         
         .btn-success {
@@ -724,8 +661,7 @@
             .stats-container,
             .control-buttons,
             .diagram-section,
-            .restaurant-selector .restaurant-details,
-            .dashboard-panel {
+            .restaurant-selector .restaurant-details {
                 display: none;
             }
             
@@ -742,19 +678,7 @@
             
             .header {
                 box-shadow: none;
-                border-bottom: 2px solid var(--primary-color);
-            }
-            
-            .criteria-table th {
-                background-color: #f0f0f0 !important;
-                color: #000 !important;
-                -webkit-print-color-adjust: exact;
-            }
-            
-            .results-table th {
-                background-color: #f0f0f0 !important;
-                color: #000 !important;
-                -webkit-print-color-adjust: exact;
+                border-bottom: 2px solid var(--gold-color);
             }
         }
         
@@ -772,14 +696,6 @@
             .axis-box {
                 width: 160px;
                 height: 110px;
-            }
-            
-            .dashboard-stats {
-                gap: 10px;
-            }
-            
-            .dashboard-card {
-                min-width: 160px;
             }
         }
         
@@ -855,15 +771,6 @@
                 padding-right: 0;
                 margin-top: 15px;
             }
-            
-            .dashboard-stats {
-                flex-direction: column;
-            }
-            
-            .dashboard-card {
-                min-width: 100%;
-                margin-bottom: 10px;
-            }
         }
         
         @media (max-width: 480px) {
@@ -908,29 +815,6 @@
     </div>
 
     <div class="container">
-        <!-- لوحة التحكم -->
-        <div class="dashboard-panel">
-            <h2 class="dashboard-title">لوحة التحكم</h2>
-            <div class="dashboard-stats">
-                <div class="dashboard-card">
-                    <div class="value" id="dashboard-total">0</div>
-                    <div class="label">إجمالي الدرجات</div>
-                </div>
-                <div class="dashboard-card">
-                    <div class="value" id="dashboard-percentage">0%</div>
-                    <div class="label">النسبة المئوية</div>
-                </div>
-                <div class="dashboard-card">
-                    <div class="value" id="dashboard-restaurants">59</div>
-                    <div class="label">عدد المطاعم</div>
-                </div>
-                <div class="dashboard-card">
-                    <div class="value" id="dashboard-date">2024-01</div>
-                    <div class="label">الشهر الحالي</div>
-                </div>
-            </div>
-        </div>
-
         <!-- اختيار المطعم -->
         <div class="restaurant-selector">
             <div class="restaurant-info">
@@ -997,11 +881,11 @@
 
         <!-- الكروت الإحصائية المتحركة -->
         <div class="stats-container">
-            <div class="stat-card floating red">
+            <div class="stat-card floating yellow">
                 <div class="stat-value" id="total-score">0</div>
                 <div class="stat-label">إجمالي الدرجات المحققة</div>
             </div>
-            <div class="stat-card floating yellow">
+            <div class="stat-card floating orange">
                 <div class="stat-value" id="total-percentage">0%</div>
                 <div class="stat-label">النسبة المئوية الإجمالية</div>
             </div>
@@ -1181,9 +1065,9 @@
     <!-- قالب PDF مخفي -->
     <div id="pdf-template" style="position: absolute; left: -10000px; top: -10000px; width: 794px; height: 1123px; background: white; padding: 20px; box-sizing: border-box; font-family: 'Times New Roman', serif; font-size: 12px; direction: rtl;">
         <div style="text-align: center; margin-bottom: 15px;">
-            <img src="https://i.postimg.cc/ry4Bxx0L/Bent_Aldeek_Logo.jpg" alt="شعار الشركة" style="width: 70px; height: 70px; border-radius: 50%; border: 2px solid #D4AF37; margin-bottom: 10px;">
-            <h2 style="color: #D4AF37; margin: 0; font-size: 24px; font-weight: bold;">مطاعم بنت الديك</h2>
-            <h3 style="color: #D4AF37; margin: 10px 0 15px 0; font-size: 20px; font-weight: bold;">نموذج تقييم المطعم</h3>
+            <img src="https://i.postimg.cc/ry4Bxx0L/Bent_Aldeek_Logo.jpg" alt="شعار الشركة" style="width: 70px; height: 70px; border-radius: 50%; border: 2px solid #FFA500; margin-bottom: 10px;">
+            <h2 style="color: #FFA500; margin: 0; font-size: 24px; font-weight: bold;">مطاعم بنت الديك</h2>
+            <h3 style="color: #FFA500; margin: 10px 0 15px 0; font-size: 20px; font-weight: bold;">نموذج تقييم المطعم</h3>
             <div style="margin-bottom: 10px; font-size: 16px; font-weight: bold;">
                 <div>المطعم: <span id="pdf-restaurant" style="font-weight: bold;"></span></div>
                 <div>تاريخ التقييم: <span id="pdf-date"></span></div>
@@ -1194,32 +1078,32 @@
         
         <!-- مخطط العناصر الأساسية للتميز في PDF -->
         <div style="margin: 15px 0; text-align: center; border: 1px solid #ddd; padding: 10px; border-radius: 5px;">
-            <h4 style="color: #D4AF37; margin: 0 0 10px 0; font-size: 16px; font-weight: bold;">العناصر الأساسية للتميز</h4>
+            <h4 style="color: #FFA500; margin: 0 0 10px 0; font-size: 16px; font-weight: bold;">العناصر الأساسية للتميز</h4>
             <div id="pdf-diagram" style="position: relative; width: 100%; height: 200px; margin: 0 auto;">
                 <!-- سيتم إضافة المخطط هنا -->
             </div>
         </div>
         
         <div style="margin-bottom: 15px; padding: 10px; background: #f8f9fa; border-radius: 4px; font-size: 13px;">
-            <h4 style="color: #D4AF37; margin: 0 0 8px 0; text-align: center; font-size: 16px;">ملخص النتائج</h4>
+            <h4 style="color: #FFA500; margin: 0 0 8px 0; text-align: center; font-size: 16px;">ملخص النتائج</h4>
             <div id="pdf-summary" style="text-align: center;"></div>
         </div>
         
         <table style="font-size: 10px; border-collapse: collapse; width: 100%; margin-bottom: 15px;">
             <thead>
                 <tr>
-                    <th style="padding: 8px; border: 1px solid #000; text-align: center; background: #D4AF37; color: #333;">المحور</th>
-                    <th style="padding: 8px; border: 1px solid #000; text-align: center; background: #D4AF37; color: #333;">الدرجة القصوى</th>
-                    <th style="padding: 8px; border: 1px solid #000; text-align: center; background: #D4AF37; color: #333;">الدرجة المحققة</th>
-                    <th style="padding: 8px; border: 1px solid #000; text-align: center; background: #D4AF37; color: #333;">النسبة %</th>
+                    <th style="padding: 8px; border: 1px solid #000; text-align: center; background: #FFA500; color: white;">المحور</th>
+                    <th style="padding: 8px; border: 1px solid #000; text-align: center; background: #FFA500; color: white;">الدرجة القصوى</th>
+                    <th style="padding: 8px; border: 1px solid #000; text-align: center; background: #FFA500; color: white;">الدرجة المحققة</th>
+                    <th style="padding: 8px; border: 1px solid #000; text-align: center; background: #FFA500; color: white;">النسبة %</th>
                 </tr>
             </thead>
             <tbody id="pdf-results-body">
             </tbody>
         </table>
         
-        <div style="margin-top: 15px; padding: 10px; border-top: 2px solid #D4AF37; font-size: 13px;">
-            <h4 style="color: #D4AF37; margin: 0 0 8px 0; text-align: center; font-size: 16px;">التقييم النهائي</h4>
+        <div style="margin-top: 15px; padding: 10px; border-top: 2px solid #FFA500; font-size: 13px;">
+            <h4 style="color: #FFA500; margin: 0 0 8px 0; text-align: center; font-size: 16px;">التقييم النهائي</h4>
             <div id="pdf-final-evaluation" style="text-align: center; font-size: 15px; font-weight: bold;"></div>
             <!-- إضافة الدائرة الملونة للتقييم النهائي في PDF -->
             <div id="pdf-final-circle" style="width: 60px; height: 60px; border-radius: 50%; margin: 10px auto; display: flex; justify-content: center; align-items: center; font-weight: bold; font-size: 18px; color: white;">
@@ -1229,67 +1113,19 @@
     </div>
 
     <script>
-        // بيانات المطاعم
+        // بيانات المطاعم - مطاعم بنت الديك
         const restaurantsData = [
-            { name: "الفيحاء", areaManager: "حجازي", operationManager: "طارق بيومي" },
-            { name: "شارع البحرين", areaManager: "مختار", operationManager: "هاني عبدالله" },
-            { name: "جمعية العدان والقصور", areaManager: "انور", operationManager: "طارق بيومي" },
-            { name: "الجابرية تكا و فرايد", areaManager: "مختار", operationManager: "هاني عبدالله" },
-            { name: "الفحاحيل", areaManager: "وليد", operationManager: "هاني عبدالله" },
-            { name: "أبو حليفة", areaManager: "ثروت", operationManager: "هاني عبدالله" },
-            { name: "الرقعي", areaManager: "عماد", operationManager: "طارق بيومي" },
-            { name: "مشرف", areaManager: "مختار", operationManager: "هاني عبدالله" },
-            { name: "النافورة", areaManager: "مختار", operationManager: "هاني عبدالله" },
-            { name: "القادسية", areaManager: "حجازي", operationManager: "طارق بيومي" },
-            { name: "صباح السالم", areaManager: "ثروت", operationManager: "هاني عبدالله" },
-            { name: "الضباعية", areaManager: "وليد", operationManager: "هاني عبدالله" },
-            { name: "الشرق", areaManager: "وليد", operationManager: "هاني عبدالله" },
-            { name: "الجابرية بنت الديك", areaManager: "مختار", operationManager: "هاني عبدالله" },
-            { name: "الجهراء الزويخ", areaManager: "طارق", operationManager: "طارق بيومي" },
-            { name: "الشويخ واره", areaManager: "حجازي", operationManager: "طارق بيومي" },
-            { name: "السيد ياسين", areaManager: "مختار", operationManager: "هاني عبدالله" },
-            { name: "الفنطاس", areaManager: "وليد", operationManager: "هاني عبدالله" },
-            { name: "السندباد", areaManager: "مختار", operationManager: "هاني عبدالله" },
-            { name: "المطار", areaManager: "حجازي", operationManager: "طارق بيومي" },
-            { name: "المنقف", areaManager: "وليد", operationManager: "هاني عبدالله" },
-            { name: "حولي بارك", areaManager: "حجازي", operationManager: "طارق بيومي" },
-            { name: "الرقة", areaManager: "ثروت", operationManager: "هاني عبدالله" },
-            { name: "الرحاب", areaManager: "عماد", operationManager: "طارق بيومي" },
-            { name: "هدية", areaManager: "ثروت", operationManager: "هاني عبدالله" },
-            { name: "نادي الصليبخات", areaManager: "عماد", operationManager: "طارق بيومي" },
-            { name: "الجهراء الصناعية", areaManager: "حجازي", operationManager: "طارق بيومي" },
-            { name: "الفروانية", areaManager: "عماد", operationManager: "طارق بيومي" },
-            { name: "أسواق القرين", areaManager: "انور", operationManager: "طارق بيومي" },
-            { name: "سلوى", areaManager: "ثروت", operationManager: "هاني عبدالله" },
-            { name: "سوق الجليب", areaManager: "طارق", operationManager: "طارق بيومي" },
-            { name: "الشهداء", areaManager: "انور", operationManager: "طارق بيومي" },
-            { name: "الدسمة وبنيد القار", areaManager: "وليد", operationManager: "هاني عبدالله" },
-            { name: "جمعية صباح الاحمد", areaManager: "ثروت", operationManager: "هاني عبدالله" },
-            { name: "الافينيوز", areaManager: "طارق", operationManager: "طارق بيومي" },
-            { name: "الصليبية الصناعية", areaManager: "طارق", operationManager: "طارق بيومي" },
-            { name: "جمعية أبوفطيرة", areaManager: "وليد", operationManager: "هاني عبدالله" },
-            { name: "غرب أبو فطيرة", areaManager: "انور", operationManager: "طارق بيومي" },
-            { name: "خيطان العصيمي", areaManager: "انور", operationManager: "طارق بيومي" },
-            { name: "الوفرة", areaManager: "ثروت", operationManager: "هاني عبدالله" },
-            { name: "جمعية القيروان", areaManager: "طارق", operationManager: "طارق بيومي" },
-            { name: "شرق الاحمدي", areaManager: "ثروت", operationManager: "هاني عبدالله" },
-            { name: "الفروانية فرع 2", areaManager: "عماد", operationManager: "طارق بيومي" },
-            { name: "جمعية الصليبية", areaManager: "طارق", operationManager: "طارق بيومي" },
-            { name: "جمعية الزهراء", areaManager: "انور", operationManager: "طارق بيومي" },
-            { name: "جمعية مدينة جابر الأحمد", areaManager: "عماد", operationManager: "طارق بيومي" },
-            { name: "الخيران أوتليت مول", areaManager: "وليد", operationManager: "هاني عبدالله" },
-            { name: "الخيران أويا مول", areaManager: "وليد", operationManager: "هاني عبدالله" },
-            { name: "الجهراء ليالي الشرق", areaManager: "حجازي", operationManager: "طارق بيومي" },
-            { name: "الجهراء مجمع مكة", areaManager: "طارق", operationManager: "طارق بيومي" },
-            { name: "العارضية الجديد", areaManager: "عماد", operationManager: "طارق بيومي" },
-            { name: "الري", areaManager: "مختار", operationManager: "هاني عبدالله" },
-            { name: "مارينا مول", areaManager: "مختار", operationManager: "هاني عبدالله" },
-            { name: "صباح السالم (العرين)", areaManager: "ثروت", operationManager: "هاني عبدالله" },
-            { name: "مول 360", areaManager: "انور", operationManager: "طارق بيومي" },
-            { name: "الخيول", areaManager: "ثروت", operationManager: "هاني عبدالله" },
-            { name: "مجمع الكوت", areaManager: "وليد", operationManager: "هاني عبدالله" },
-            { name: "كبد", areaManager: "طارق", operationManager: "طارق بيومي" },
-            { name: "سعد العبدالله", areaManager: "مختار", operationManager: "هاني عبدالله" }
+            { name: "الجهراء / Al Jahra", areaManager: "محمد مرتضى", operationManager: "محمد مرتضى" },
+            { name: "السالمية / Al Salmiya", areaManager: "محمد مرتضى", operationManager: "محمد مرتضى" },
+            { name: "الدسمة / Al Dasma", areaManager: "محمد مرتضى", operationManager: "محمد مرتضى" },
+            { name: "صباح السالم / sabah Elsalim", areaManager: "محمد مرتضى", operationManager: "محمد مرتضى" },
+            { name: "الفحاحيل / Al Fahahail", areaManager: "محمد مرتضى", operationManager: "محمد مرتضى" },
+            { name: "العارضية / Al Ardiya", areaManager: "محمد مرتضى", operationManager: "محمد مرتضى" },
+            { name: "هدية / Hadiya", areaManager: "محمد مرتضى", operationManager: "محمد مرتضى" },
+            { name: "صباح الأحمد / Sabah Elahmad", areaManager: "محمد مرتضى", operationManager: "محمد مرتضى" },
+            { name: "الصليبية / Al Sulaibya", areaManager: "محمد مرتضى", operationManager: "محمد مرتضى" },
+            { name: "خيطان / Khaitan", areaManager: "محمد مرتضى", operationManager: "محمد مرتضى" },
+            { name: "الخيول / Al Khyoul", areaManager: "محمد مرتضى", operationManager: "محمد مرتضى" }
         ];
 
         // بيانات نموذج التقييم
@@ -1359,9 +1195,6 @@
 
         // تهيئة النموذج
         function initializeForm() {
-            // تحديث لوحة التحكم
-            updateDashboard();
-            
             // تهيئة البحث الديناميكي عن المطاعم
             setupRestaurantSearch();
             
@@ -1397,15 +1230,6 @@
             
             // حساب النتائج الأولية
             calculateResults();
-        }
-
-        // تحديث لوحة التحكم
-        function updateDashboard() {
-            const today = new Date();
-            const month = today.getMonth() + 1; // JavaScript months are 0-indexed
-            const year = today.getFullYear();
-            document.getElementById('dashboard-date').textContent = `${year}-${month.toString().padStart(2, '0')}`;
-            document.getElementById('dashboard-restaurants').textContent = restaurantsData.length;
         }
 
         // إعداد البحث الديناميكي عن المطاعم
@@ -1603,9 +1427,6 @@
             // تحديث الكروت الإحصائية
             updateStatsCards(totalAchieved, totalPercentage, totalMax);
             
-            // تحديث لوحة التحكم
-            updateDashboardCards(totalAchieved, totalPercentage);
-            
             // تحديث جدول النتائج
             updateResultsTable(results, totalAchieved, totalPercentage, totalMax);
             
@@ -1641,13 +1462,13 @@
             // تحديث لون الكروت حسب النسبة
             const statCards = document.querySelectorAll('.stat-card');
             statCards.forEach(card => {
-                card.classList.remove('red', 'yellow', 'green', 'gold');
+                card.classList.remove('yellow', 'orange', 'green', 'gold');
                 
                 if (totalPercentage < 75) {
-                    card.classList.add('red');
+                    card.classList.add('yellow');
                     document.getElementById('final-grade').textContent = '🔴 تدخل';
                 } else if (totalPercentage >= 75 && totalPercentage < 85) {
-                    card.classList.add('yellow');
+                    card.classList.add('orange');
                     document.getElementById('final-grade').textContent = '🟡 متابعة';
                 } else if (totalPercentage >= 85 && totalPercentage < 90) {
                     card.classList.add('green');
@@ -1657,12 +1478,6 @@
                     document.getElementById('final-grade').textContent = '🟡✨ ممتاز';
                 }
             });
-        }
-
-        // تحديث كروت لوحة التحكم
-        function updateDashboardCards(totalAchieved, totalPercentage) {
-            document.getElementById('dashboard-total').textContent = totalAchieved;
-            document.getElementById('dashboard-percentage').textContent = totalPercentage + '%';
         }
 
         // تحديث جدول النتائج
@@ -1785,8 +1600,8 @@
 
         // الحصول على فئة اللون للنسبة المئوية
         function getPercentageColorClass(percentage) {
-            if (percentage < 75) return 'red';
-            if (percentage >= 75 && percentage < 85) return 'yellow';
+            if (percentage < 75) return 'yellow';
+            if (percentage >= 75 && percentage < 85) return 'orange';
             if (percentage >= 85 && percentage < 90) return 'green';
             return 'gold';
         }
@@ -1837,25 +1652,25 @@
                 const pdfDiagram = document.getElementById('pdf-diagram');
                 pdfDiagram.innerHTML = `
                     <div style="position: relative; width: 300px; height: 150px; margin: 0 auto;">
-                        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 80px; height: 80px; background: linear-gradient(135deg, #FFD700, #D4AF37); border-radius: 50%; display: flex; justify-content: center; align-items: center; color: white; font-weight: bold; font-size: 12px; text-align: center; border: 3px solid white; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
+                        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 80px; height: 80px; background: linear-gradient(135deg, #FFD700, #FFA500); border-radius: 50%; display: flex; justify-content: center; align-items: center; color: white; font-weight: bold; font-size: 12px; text-align: center; border: 3px solid white; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
                             الهدف:<br>الجودة
                         </div>
-                        <div style="position: absolute; top: 20px; right: 20px; width: 70px; height: 50px; background: white; border-radius: 5px; border: 2px solid #D4AF37; display: flex; flex-direction: column; justify-content: center; align-items: center; font-size: 10px; padding: 5px;">
+                        <div style="position: absolute; top: 20px; right: 20px; width: 70px; height: 50px; background: white; border-radius: 5px; border: 2px solid #FFD700; display: flex; flex-direction: column; justify-content: center; align-items: center; font-size: 10px; padding: 5px;">
                             <div style="font-weight: bold;">خدمة العملاء</div>
                             <div style="font-size: 12px; font-weight: bold;">${document.querySelector('#service-box .axis-score').textContent}</div>
                             <div>من ${document.querySelector('#service-box .axis-total').textContent.replace('من ', '')}</div>
                         </div>
-                        <div style="position: absolute; top: 20px; left: 20px; width: 70px; height: 50px; background: white; border-radius: 5px; border: 2px solid #FFD700; display: flex; flex-direction: column; justify-content: center; align-items: center; font-size: 10px; padding: 5px;">
+                        <div style="position: absolute; top: 20px; left: 20px; width: 70px; height: 50px; background: white; border-radius: 5px; border: 2px solid #FFA500; display: flex; flex-direction: column; justify-content: center; align-items: center; font-size: 10px; padding: 5px;">
                             <div style="font-weight: bold;">النظافة</div>
                             <div style="font-size: 12px; font-weight: bold;">${document.querySelector('#cleanliness-box .axis-score').textContent}</div>
                             <div>من ${document.querySelector('#cleanliness-box .axis-total').textContent.replace('من ', '')}</div>
                         </div>
-                        <div style="position: absolute; bottom: 20px; right: 20px; width: 70px; height: 50px; background: white; border-radius: 5px; border: 2px solid #B8860B; display: flex; flex-direction: column; justify-content: center; align-items: center; font-size: 10px; padding: 5px;">
+                        <div style="position: absolute; bottom: 20px; right: 20px; width: 70px; height: 50px; background: white; border-radius: 5px; border: 2px solid #E6B800; display: flex; flex-direction: column; justify-content: center; align-items: center; font-size: 10px; padding: 5px;">
                             <div style="font-weight: bold;">التجهيزات</div>
                             <div style="font-size: 12px; font-weight: bold;">${document.querySelector('#equipment-box .axis-score').textContent}</div>
                             <div>من ${document.querySelector('#equipment-box .axis-total').textContent.replace('من ', '')}</div>
                         </div>
-                        <div style="position: absolute; bottom: 20px; left: 20px; width: 70px; height: 50px; background: white; border-radius: 5px; border: 2px solid #FFC107; display: flex; flex-direction: column; justify-content: center; align-items: center; font-size: 10px; padding: 5px;">
+                        <div style="position: absolute; bottom: 20px; left: 20px; width: 70px; height: 50px; background: white; border-radius: 5px; border: 2px solid #FF8C00; display: flex; flex-direction: column; justify-content: center; align-items: center; font-size: 10px; padding: 5px;">
                             <div style="font-weight: bold;">الإدارة</div>
                             <div style="font-size: 12px; font-weight: bold;">${document.querySelector('#management-box .axis-score').textContent}</div>
                             <div>من ${document.querySelector('#management-box .axis-total').textContent.replace('من ', '')}</div>
