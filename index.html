@@ -1,0 +1,2031 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نموذج تقييم المطعم - مطاعم بنت الديك</title>
+    <!-- إضافة أيقونة شعار الشركة -->
+    <link rel="icon" href="https://i.postimg.cc/ry4Bxx0L/Bent_Aldeek_Logo.jpg" type="image/jpeg">
+    <!-- مكتبات JavaScript لإنشاء PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #D4AF37; /* ذهبي */
+            --secondary-color: #FFD700; /* أصفر ذهبي */
+            --yellow-dark: #B8860B;
+            --yellow-medium: #FFC107;
+            --yellow-light: #FFF8DC;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+            --danger-color: #e74c3c;
+            --gold-color: #ffd700;
+            --light-bg: #f8f9fa;
+            --border-color: #dee2e6;
+            --yellow-light-bg: #fffce6;
+            --yellow-medium-bg: #fff9e6;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+            padding-bottom: 50px;
+            font-size: 90%;
+        }
+        
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+        
+        /* رأس الصفحة */
+        .header {
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 15px 0;
+            text-align: center;
+            border-bottom: 5px solid var(--primary-color);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            margin-bottom: 25px;
+        }
+        
+        .logo-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .logo {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: 3px solid white;
+            margin-left: 10px;
+        }
+        
+        .header h1 {
+            font-size: 26px;
+            margin-bottom: 8px;
+        }
+        
+        .header p {
+            font-size: 15px;
+            opacity: 0.9;
+        }
+        
+        /* اختيار المطعم */
+        .restaurant-selector {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .restaurant-info {
+            flex: 1;
+            min-width: 300px;
+        }
+        
+        .restaurant-search-container {
+            position: relative;
+            width: 100%;
+        }
+        
+        #restaurant-search {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            font-size: 15px;
+            margin-top: 8px;
+            background-color: white;
+        }
+        
+        .restaurant-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 0 0 5px 5px;
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 1000;
+            display: none;
+        }
+        
+        .restaurant-dropdown-item {
+            padding: 10px;
+            cursor: pointer;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .restaurant-dropdown-item:hover {
+            background-color: #f5f5f5;
+        }
+        
+        .restaurant-details {
+            flex: 1;
+            min-width: 300px;
+            padding-right: 20px;
+        }
+        
+        .restaurant-details p {
+            margin: 8px 0;
+            font-size: 16px;
+            font-weight: bold;
+        }
+        
+        .evaluator-input {
+            flex: 1;
+            min-width: 300px;
+            margin-top: 15px;
+        }
+        
+        .evaluator-input input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            font-size: 15px;
+            margin-top: 8px;
+        }
+        
+        /* مخطط الدائرة المركزية */
+        .diagram-section {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 25px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+            text-align: center;
+        }
+        
+        .diagram-title {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            font-size: 20px;
+            font-weight: bold;
+        }
+        
+        .diagram-container {
+            position: relative;
+            width: 100%;
+            max-width: 700px;
+            height: 450px;
+            margin: 0 auto;
+        }
+        
+        .center-circle {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 180px;
+            height: 180px;
+            background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+            box-shadow: 0 0 25px rgba(0, 0, 0, 0.2);
+            border: 6px solid white;
+        }
+        
+        .center-text {
+            color: white;
+            font-weight: bold;
+            font-size: 18px;
+            text-align: center;
+            padding: 15px;
+        }
+        
+        .axis-box {
+            position: absolute;
+            width: 180px;
+            height: 120px;
+            background-color: white;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            border: 3px solid;
+            padding: 15px;
+            z-index: 5;
+            transition: all 0.3s ease;
+        }
+        
+        .axis-box:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+        }
+        
+        .axis-box.top-left {
+            top: 15%;
+            right: 10%;
+            border-color: #D4AF37;
+        }
+        
+        .axis-box.top-right {
+            top: 15%;
+            left: 10%;
+            border-color: #FFD700;
+        }
+        
+        .axis-box.bottom-left {
+            bottom: 15%;
+            right: 10%;
+            border-color: #B8860B;
+        }
+        
+        .axis-box.bottom-right {
+            bottom: 15%;
+            left: 10%;
+            border-color: #FFC107;
+        }
+        
+        .axis-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+            font-size: 16px;
+        }
+        
+        .axis-score {
+            font-size: 24px;
+            font-weight: bold;
+            margin: 5px 0;
+        }
+        
+        .axis-total {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        /* الكروت الإحصائية المتحركة */
+        .stats-container {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            margin-bottom: 25px;
+            position: relative;
+        }
+        
+        .stat-card {
+            flex: 1;
+            min-width: 200px;
+            margin: 8px;
+            padding: 18px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+            text-align: center;
+            transition: transform 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .floating {
+            animation: floating 3s ease-in-out infinite;
+        }
+        
+        @keyframes floating {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+            100% { transform: translateY(0px); }
+        }
+        
+        .stat-card.red { background-color: #ffeaea; border-top: 5px solid var(--danger-color); }
+        .stat-card.yellow { background-color: var(--yellow-light-bg); border-top: 5px solid var(--secondary-color); }
+        .stat-card.green { background-color: #e8f7ef; border-top: 5px solid var(--success-color); }
+        .stat-card.gold { background-color: #fffce6; border-top: 5px solid var(--gold-color); }
+        
+        .stat-value {
+            font-size: 36px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        
+        .stat-label {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        /* لوحة التحكم */
+        .dashboard-panel {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .dashboard-title {
+            text-align: center;
+            margin-bottom: 20px;
+            color: var(--primary-color);
+            font-size: 22px !important;
+            font-weight: bold;
+        }
+        
+        .dashboard-stats {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .dashboard-card {
+            flex: 1;
+            min-width: 180px;
+            background: linear-gradient(135deg, var(--yellow-light), var(--yellow-medium-bg));
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border-left: 5px solid var(--primary-color);
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        .dashboard-card:nth-child(2) {
+            animation-delay: 0.5s;
+        }
+        
+        .dashboard-card:nth-child(3) {
+            animation-delay: 1s;
+        }
+        
+        .dashboard-card:nth-child(4) {
+            animation-delay: 1.5s;
+        }
+        
+        .dashboard-card .value {
+            font-size: 32px;
+            font-weight: bold;
+            color: var(--yellow-dark);
+            margin: 10px 0;
+        }
+        
+        .dashboard-card .label {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        /* نموذج التقييم */
+        .evaluation-form {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            padding: 20px;
+            margin-bottom: 25px;
+        }
+        
+        .section-title {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0 12px;
+            font-size: 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .section-number {
+            background-color: white;
+            color: var(--primary-color);
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            font-size: 16px;
+        }
+        
+        .criteria-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 15px;
+            font-size: 13px;
+        }
+        
+        .criteria-table th {
+            background-color: var(--secondary-color);
+            padding: 12px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+            font-size: 13px;
+            color: #333;
+        }
+        
+        .criteria-table td {
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            text-align: center;
+            vertical-align: middle;
+        }
+        
+        .criteria-number {
+            text-align: center;
+            width: 50px;
+            font-weight: bold;
+        }
+        
+        .criteria-name {
+            width: 30%;
+            text-align: right;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        
+        .max-score {
+            text-align: center;
+            width: 80px;
+        }
+        
+        .achieved-score {
+            text-align: center;
+            width: 120px;
+        }
+        
+        .notes {
+            width: 20%;
+        }
+        
+        .not-available {
+            width: 100px;
+            text-align: center;
+        }
+        
+        .score-btn {
+            width: 80px;
+            height: 50px;
+            padding: 0;
+            border: 2px solid var(--secondary-color);
+            border-radius: 8px;
+            background-color: white;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto;
+        }
+        
+        .score-btn:hover {
+            background-color: #f0f8ff;
+            transform: scale(1.05);
+        }
+        
+        .score-btn.active {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+        
+        input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+        
+        input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 13px;
+        }
+        
+        /* نتائج التقييم */
+        .results-summary {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            padding: 20px;
+            margin-bottom: 25px;
+        }
+        
+        .results-title {
+            text-align: center;
+            margin-bottom: 20px;
+            color: var(--primary-color);
+            font-size: 22px !important;
+            font-weight: bold;
+        }
+        
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            font-size: 14px;
+        }
+        
+        .results-table th {
+            background-color: var(--secondary-color);
+            color: #333;
+            padding: 14px;
+            text-align: center;
+            font-size: 15px;
+        }
+        
+        .results-table td {
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            text-align: center;
+        }
+        
+        .total-row {
+            font-weight: bold;
+            background-color: var(--light-bg);
+            font-size: 16px;
+        }
+        
+        .percentage-cell {
+            font-weight: bold;
+            border-radius: 4px;
+            color: black !important;
+        }
+        
+        .final-evaluation-circle {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            margin: 0 auto;
+            border: 3px solid #ddd;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            font-size: 18px;
+            color: white;
+        }
+        
+        /* أزرار التحكم */
+        .control-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 25px;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--yellow-dark);
+        }
+        
+        .btn-success {
+            background-color: var(--success-color);
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background-color: #219653;
+        }
+        
+        .btn-warning {
+            background-color: var(--warning-color);
+            color: white;
+        }
+        
+        .btn-warning:hover {
+            background-color: #e67e22;
+        }
+
+        /* توقيع المطور */
+        .signature-card {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: linear-gradient(135deg, #FF6E00, #2196F3);
+            color: white;
+            padding: 10.5px 17.5px;
+            border-radius: 8.5px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 0.8rem;
+            font-weight: 600;
+            z-index: 1000;
+            animation: float 6s ease-in-out infinite;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 2px solid rgba(255,255,255,0.2);
+        }
+
+        .signature-card:hover { 
+            transform: scale(1.05); 
+            box-shadow: 0 12px 35px rgba(0,0,0,0.4); 
+        }
+
+        @keyframes float { 
+            0% { transform: translateY(0px); } 
+            50% { transform: translateY(-15px); } 
+            100% { transform: translateY(0px); } 
+        }
+
+        .signature-card::before {
+            content: '';
+            position: absolute;
+            top: -2px; left: -2px; right: -2px; bottom: -2px;
+            background: linear-gradient(135deg, #80EF80, #2196F3);
+            border-radius: 14px;
+            z-index: -1;
+            animation: borderGlow 3s linear infinite;
+            background-size: 400%;
+        }
+
+        @keyframes borderGlow { 
+            0% { background-position: 0% 50%; } 
+            50% { background-position: 100% 50%; } 
+            100% { background-position: 0% 50%; } 
+        }
+
+        .signature-card .name { 
+            font-size: 0.95rem; 
+            font-weight: 700; 
+            margin-bottom: 5px; 
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3); 
+        }
+
+        .signature-card .title { 
+            font-size: 0.7rem; 
+            opacity: 0.9; 
+            font-weight: 500; 
+        }
+
+        @media (max-width: 768px) { 
+            .signature-card { 
+                position: relative; 
+                bottom: auto; 
+                left: auto; 
+                margin: 20px auto 0; 
+                width: fit-content; 
+                animation: none; 
+            } 
+            .signature-card:hover { 
+                transform: none; 
+            } 
+        }
+
+        @media print {
+            .signature-card {
+                display: none;
+            }
+        }
+        
+        /* تصميم الطباعة */
+        @media print {
+            body {
+                font-size: 80%;
+                transform: scale(0.9);
+                transform-origin: top center;
+            }
+            
+            .stats-container,
+            .control-buttons,
+            .diagram-section,
+            .restaurant-selector .restaurant-details,
+            .dashboard-panel {
+                display: none;
+            }
+            
+            .evaluation-form,
+            .results-summary {
+                box-shadow: none;
+                border: 1px solid #ddd;
+            }
+            
+            .restaurant-selector {
+                border: 1px solid #ddd;
+                box-shadow: none;
+            }
+            
+            .header {
+                box-shadow: none;
+                border-bottom: 2px solid var(--primary-color);
+            }
+            
+            .criteria-table th {
+                background-color: #f0f0f0 !important;
+                color: #000 !important;
+                -webkit-print-color-adjust: exact;
+            }
+            
+            .results-table th {
+                background-color: #f0f0f0 !important;
+                color: #000 !important;
+                -webkit-print-color-adjust: exact;
+            }
+        }
+        
+        /* تصميم متجاوب */
+        @media (max-width: 1024px) {
+            .diagram-container {
+                height: 400px;
+            }
+            
+            .center-circle {
+                width: 150px;
+                height: 150px;
+            }
+            
+            .axis-box {
+                width: 160px;
+                height: 110px;
+            }
+            
+            .dashboard-stats {
+                gap: 10px;
+            }
+            
+            .dashboard-card {
+                min-width: 160px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .diagram-container {
+                height: 350px;
+            }
+            
+            .center-circle {
+                width: 130px;
+                height: 130px;
+            }
+            
+            .center-text {
+                font-size: 16px;
+            }
+            
+            .axis-box {
+                width: 140px;
+                height: 100px;
+                padding: 10px;
+            }
+            
+            .axis-title {
+                font-size: 14px;
+            }
+            
+            .axis-score {
+                font-size: 20px;
+            }
+            
+            .stats-container {
+                flex-direction: column;
+            }
+            
+            .criteria-table {
+                font-size: 12px;
+                display: block;
+                overflow-x: auto;
+            }
+            
+            .criteria-table th,
+            .criteria-table td {
+                padding: 6px;
+            }
+            
+            .criteria-name {
+                font-size: 13px;
+            }
+            
+            .score-btn {
+                width: 70px;
+                height: 45px;
+                font-size: 16px;
+            }
+            
+            .control-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn {
+                width: 100%;
+                max-width: 300px;
+                margin-bottom: 10px;
+            }
+            
+            .restaurant-selector {
+                flex-direction: column;
+            }
+            
+            .restaurant-details {
+                padding-right: 0;
+                margin-top: 15px;
+            }
+            
+            .dashboard-stats {
+                flex-direction: column;
+            }
+            
+            .dashboard-card {
+                min-width: 100%;
+                margin-bottom: 10px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .diagram-container {
+                height: 300px;
+            }
+            
+            .center-circle {
+                width: 110px;
+                height: 110px;
+            }
+            
+            .center-text {
+                font-size: 14px;
+            }
+            
+            .axis-box {
+                width: 120px;
+                height: 85px;
+            }
+            
+            .axis-title {
+                font-size: 12px;
+            }
+            
+            .axis-score {
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- رأس الصفحة -->
+    <div class="header">
+        <div class="container">
+            <div class="logo-container">
+                <img src="https://i.postimg.cc/ry4Bxx0L/Bent_Aldeek_Logo.jpg" alt="شعار مطاعم بنت الديك" class="logo">
+            </div>
+            <h1>نموذج تقييم المطعم</h1>
+            <p>مطاعم بنت الديك | نظام التقييم الشامل (1250 درجة كحد أقصى)</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- لوحة التحكم -->
+        <div class="dashboard-panel">
+            <h2 class="dashboard-title">لوحة التحكم</h2>
+            <div class="dashboard-stats">
+                <div class="dashboard-card">
+                    <div class="value" id="dashboard-total">0</div>
+                    <div class="label">إجمالي الدرجات</div>
+                </div>
+                <div class="dashboard-card">
+                    <div class="value" id="dashboard-percentage">0%</div>
+                    <div class="label">النسبة المئوية</div>
+                </div>
+                <div class="dashboard-card">
+                    <div class="value" id="dashboard-restaurants">59</div>
+                    <div class="label">عدد المطاعم</div>
+                </div>
+                <div class="dashboard-card">
+                    <div class="value" id="dashboard-date">2024-01</div>
+                    <div class="label">الشهر الحالي</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- اختيار المطعم -->
+        <div class="restaurant-selector">
+            <div class="restaurant-info">
+                <label for="restaurant-search"><strong>اختر المطعم:</strong></label>
+                <div class="restaurant-search-container">
+                    <input type="text" id="restaurant-search" placeholder="ابحث عن المطعم..." autocomplete="off">
+                    <div class="restaurant-dropdown" id="restaurant-dropdown"></div>
+                </div>
+                <input type="hidden" id="selected-restaurant" value="">
+            </div>
+            <div class="restaurant-details">
+                <p><strong>مدير المنطقة:</strong> <span id="area-manager">-</span></p>
+                <p><strong>مدير التشغيل:</strong> <span id="operation-manager">-</span></p>
+            </div>
+            <div class="evaluator-input">
+                <label for="evaluator-name"><strong>القائم بعملية التقييم:</strong></label>
+                <input type="text" id="evaluator-name" placeholder="اسم المقيم">
+            </div>
+        </div>
+
+        <!-- مخطط الدائرة المركزية -->
+        <div class="diagram-section" id="excellence-diagram">
+            <h3 class="diagram-title">العناصر الأساسية للتميز</h3>
+            <div class="diagram-container">
+                <!-- الخطوط الواصلة -->
+                <div class="connecting-line" id="line1"></div>
+                <div class="connecting-line" id="line2"></div>
+                <div class="connecting-line" id="line3"></div>
+                <div class="connecting-line" id="line4"></div>
+                
+                <!-- الدائرة المركزية -->
+                <div class="center-circle">
+                    <div class="center-text">
+                        الهدف:<br>الجودة المطلقة
+                    </div>
+                </div>
+                
+                <!-- المربعات المحيطة -->
+                <div class="axis-box top-left" id="service-box">
+                    <div class="axis-title">خدمة العملاء</div>
+                    <div class="axis-score">0</div>
+                    <div class="axis-total">من 200</div>
+                </div>
+                
+                <div class="axis-box top-right" id="cleanliness-box">
+                    <div class="axis-title">النظافة</div>
+                    <div class="axis-score">0</div>
+                    <div class="axis-total">من 300</div>
+                </div>
+                
+                <div class="axis-box bottom-left" id="equipment-box">
+                    <div class="axis-title">تجهيزات المطعم</div>
+                    <div class="axis-score">0</div>
+                    <div class="axis-total">من 250</div>
+                </div>
+                
+                <div class="axis-box bottom-right" id="management-box">
+                    <div class="axis-title">إدارة المطعم</div>
+                    <div class="axis-score">0</div>
+                    <div class="axis-total">من 250</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- الكروت الإحصائية المتحركة -->
+        <div class="stats-container">
+            <div class="stat-card floating red">
+                <div class="stat-value" id="total-score">0</div>
+                <div class="stat-label">إجمالي الدرجات المحققة</div>
+            </div>
+            <div class="stat-card floating yellow">
+                <div class="stat-value" id="total-percentage">0%</div>
+                <div class="stat-label">النسبة المئوية الإجمالية</div>
+            </div>
+            <div class="stat-card floating green">
+                <div class="stat-value" id="quality-score">250</div>
+                <div class="stat-label">درجة الجودة (متبقي)</div>
+            </div>
+            <div class="stat-card floating gold">
+                <div class="stat-value" id="final-grade">-</div>
+                <div class="stat-label">التقييم النهائي</div>
+            </div>
+        </div>
+
+        <!-- نموذج التقييم -->
+        <div class="evaluation-form">
+            <h2 style="text-align: center; margin-bottom: 15px; color: var(--primary-color); font-size: 20px;">نموذج تقييم المطعم (1250 درجة كحد أقصى)</h2>
+            
+            <!-- محور 1: خدمة العملاء -->
+            <div class="section-title">
+                <span>1. خدمة العملاء</span>
+                <div class="section-number">200</div>
+            </div>
+            
+            <table class="criteria-table">
+                <thead>
+                    <tr>
+                        <th width="5%">الرقم</th>
+                        <th width="30%">المحور الرئيسي</th>
+                        <th width="8%">الدرجة القصوى</th>
+                        <th width="12%">الدرجة المحققة</th>
+                        <th width="10%">غير متوفر</th>
+                        <th width="35%">الملاحظات</th>
+                    </tr>
+                </thead>
+                <tbody id="service-criteria">
+                    <!-- سيتم ملؤها بواسطة JavaScript -->
+                </tbody>
+            </table>
+            
+            <!-- محور 2: النظافة -->
+            <div class="section-title">
+                <span>2. النظافة</span>
+                <div class="section-number">300</div>
+            </div>
+            
+            <table class="criteria-table">
+                <thead>
+                    <tr>
+                        <th width="5%">الرقم</th>
+                        <th width="30%">المحور الرئيسي</th>
+                        <th width="8%">الدرجة القصوى</th>
+                        <th width="12%">الدرجة المحققة</th>
+                        <th width="10%">غير متوفر</th>
+                        <th width="35%">الملاحظات</th>
+                    </tr>
+                </thead>
+                <tbody id="cleanliness-criteria">
+                    <!-- سيتم ملؤها بواسطة JavaScript -->
+                </tbody>
+            </table>
+            
+            <!-- محور 3: المعدات والتجهيزات -->
+            <div class="section-title">
+                <span>3. المعدات والتجهيزات</span>
+                <div class="section-number">250</div>
+            </div>
+            
+            <table class="criteria-table">
+                <thead>
+                    <tr>
+                        <th width="5%">الرقم</th>
+                        <th width="30%">المحور الرئيسي</th>
+                        <th width="8%">الدرجة القصوى</th>
+                        <th width="12%">الدرجة المحققة</th>
+                        <th width="10%">غير متوفر</th>
+                        <th width="35%">الملاحظات</th>
+                    </tr>
+                </thead>
+                <tbody id="equipment-criteria">
+                    <!-- سيتم ملؤها بواسطة JavaScript -->
+                </tbody>
+            </table>
+            
+            <!-- محور 4: إدارة المطعم -->
+            <div class="section-title">
+                <span>4. إدارة المطعم</span>
+                <div class="section-number">250</div>
+            </div>
+            
+            <table class="criteria-table">
+                <thead>
+                    <tr>
+                        <th width="5%">الرقم</th>
+                        <th width="30%">المحور الرئيسي</th>
+                        <th width="8%">الدرجة القصوى</th>
+                        <th width="12%">الدرجة المحققة</th>
+                        <th width="10%">غير متوفر</th>
+                        <th width="35%">الملاحظات</th>
+                    </tr>
+                </thead>
+                <tbody id="management-criteria">
+                    <!-- سيتم ملؤها بواسطة JavaScript -->
+                </tbody>
+            </table>
+            
+            <!-- محور 5: الجودة -->
+            <div class="section-title">
+                <span>5. الجودة</span>
+                <div class="section-number">250</div>
+            </div>
+            
+            <table class="criteria-table">
+                <thead>
+                    <tr>
+                        <th width="5%">الرقم</th>
+                        <th width="30%">المحور الرئيسي</th>
+                        <th width="8%">الدرجة القصوى</th>
+                        <th width="12%">الدرجة المحققة</th>
+                        <th width="10%">غير متوفر</th>
+                        <th width="35%">الملاحظات</th>
+                    </tr>
+                </thead>
+                <tbody id="quality-criteria">
+                    <!-- سيتم ملؤها بواسطة JavaScript -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- نتائج التقييم -->
+        <div class="results-summary">
+            <h2 class="results-title">ملخص نتائج التقييم</h2>
+            <p style="text-align: center; color: #666; margin-bottom: 10px; font-size: 14px;">(المجموع الكلي يعتمد على العناصر المتاحة فقط)</p>
+            
+            <table class="results-table">
+                <thead>
+                    <tr>
+                        <th>المحور</th>
+                        <th>الدرجة القصوى</th>
+                        <th>الدرجة المحققة</th>
+                        <th>النسبة %</th>
+                        <th>الدائرة</th>
+                    </tr>
+                </thead>
+                <tbody id="results-body">
+                    <!-- سيتم ملؤها بواسطة JavaScript -->
+                </tbody>
+            </table>
+            
+            <div style="margin-top: 25px; text-align: center;">
+                <h3 id="final-evaluation" style="padding: 15px; border-radius: 5px; background-color: #f8f9fa; font-size: 18px;">
+                    إجمالي الدرجات: <span id="total-score-result">0</span> من <span id="total-max-result">1250</span> درجة
+                </h3>
+                <div style="margin-top: 15px; font-size: 17px;">
+                    <strong>التقييم النهائي:</strong> <span id="evaluation-text">لم يتم التقييم بعد</span>
+                </div>
+                <div id="final-circle" class="final-evaluation-circle" style="margin-top: 15px;">
+                    -
+                </div>
+            </div>
+        </div>
+
+        <!-- أزرار التحكم -->
+        <div class="control-buttons">
+            <button class="btn btn-primary" onclick="calculateResults()">حساب النتائج</button>
+            <button class="btn btn-success" onclick="saveAsPDF()">حفظ كملف PDF</button>
+            <button class="btn btn-warning" onclick="printEvaluation()">طباعة التقرير</button>
+            <button class="btn btn-primary" onclick="resetForm()">إعادة تعيين</button>
+        </div>
+    </div>
+
+    <!-- توقيع المطور -->
+    <div class="signature-card">
+        <div class="name">Yasser Elkhateeb</div>
+        <div class="title">مطور البرنامج 67011143</div>
+    </div>
+
+    <!-- قالب PDF مخفي -->
+    <div id="pdf-template" style="position: absolute; left: -10000px; top: -10000px; width: 794px; height: 1123px; background: white; padding: 20px; box-sizing: border-box; font-family: 'Times New Roman', serif; font-size: 12px; direction: rtl;">
+        <div style="text-align: center; margin-bottom: 15px;">
+            <img src="https://i.postimg.cc/ry4Bxx0L/Bent_Aldeek_Logo.jpg" alt="شعار الشركة" style="width: 70px; height: 70px; border-radius: 50%; border: 2px solid #D4AF37; margin-bottom: 10px;">
+            <h2 style="color: #D4AF37; margin: 0; font-size: 24px; font-weight: bold;">مطاعم بنت الديك</h2>
+            <h3 style="color: #D4AF37; margin: 10px 0 15px 0; font-size: 20px; font-weight: bold;">نموذج تقييم المطعم</h3>
+            <div style="margin-bottom: 10px; font-size: 16px; font-weight: bold;">
+                <div>المطعم: <span id="pdf-restaurant" style="font-weight: bold;"></span></div>
+                <div>تاريخ التقييم: <span id="pdf-date"></span></div>
+                <div>القائم بالتقييم: <span id="pdf-evaluator"></span></div>
+                <div>مدير المنطقة: <span id="pdf-area-manager"></span> | مدير التشغيل: <span id="pdf-operation-manager"></span></div>
+            </div>
+        </div>
+        
+        <!-- مخطط العناصر الأساسية للتميز في PDF -->
+        <div style="margin: 15px 0; text-align: center; border: 1px solid #ddd; padding: 10px; border-radius: 5px;">
+            <h4 style="color: #D4AF37; margin: 0 0 10px 0; font-size: 16px; font-weight: bold;">العناصر الأساسية للتميز</h4>
+            <div id="pdf-diagram" style="position: relative; width: 100%; height: 200px; margin: 0 auto;">
+                <!-- سيتم إضافة المخطط هنا -->
+            </div>
+        </div>
+        
+        <div style="margin-bottom: 15px; padding: 10px; background: #f8f9fa; border-radius: 4px; font-size: 13px;">
+            <h4 style="color: #D4AF37; margin: 0 0 8px 0; text-align: center; font-size: 16px;">ملخص النتائج</h4>
+            <div id="pdf-summary" style="text-align: center;"></div>
+        </div>
+        
+        <table style="font-size: 10px; border-collapse: collapse; width: 100%; margin-bottom: 15px;">
+            <thead>
+                <tr>
+                    <th style="padding: 8px; border: 1px solid #000; text-align: center; background: #D4AF37; color: #333;">المحور</th>
+                    <th style="padding: 8px; border: 1px solid #000; text-align: center; background: #D4AF37; color: #333;">الدرجة القصوى</th>
+                    <th style="padding: 8px; border: 1px solid #000; text-align: center; background: #D4AF37; color: #333;">الدرجة المحققة</th>
+                    <th style="padding: 8px; border: 1px solid #000; text-align: center; background: #D4AF37; color: #333;">النسبة %</th>
+                </tr>
+            </thead>
+            <tbody id="pdf-results-body">
+            </tbody>
+        </table>
+        
+        <div style="margin-top: 15px; padding: 10px; border-top: 2px solid #D4AF37; font-size: 13px;">
+            <h4 style="color: #D4AF37; margin: 0 0 8px 0; text-align: center; font-size: 16px;">التقييم النهائي</h4>
+            <div id="pdf-final-evaluation" style="text-align: center; font-size: 15px; font-weight: bold;"></div>
+            <!-- إضافة الدائرة الملونة للتقييم النهائي في PDF -->
+            <div id="pdf-final-circle" style="width: 60px; height: 60px; border-radius: 50%; margin: 10px auto; display: flex; justify-content: center; align-items: center; font-weight: bold; font-size: 18px; color: white;">
+                -
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // بيانات المطاعم
+        const restaurantsData = [
+            { name: "الفيحاء", areaManager: "حجازي", operationManager: "طارق بيومي" },
+            { name: "شارع البحرين", areaManager: "مختار", operationManager: "هاني عبدالله" },
+            { name: "جمعية العدان والقصور", areaManager: "انور", operationManager: "طارق بيومي" },
+            { name: "الجابرية تكا و فرايد", areaManager: "مختار", operationManager: "هاني عبدالله" },
+            { name: "الفحاحيل", areaManager: "وليد", operationManager: "هاني عبدالله" },
+            { name: "أبو حليفة", areaManager: "ثروت", operationManager: "هاني عبدالله" },
+            { name: "الرقعي", areaManager: "عماد", operationManager: "طارق بيومي" },
+            { name: "مشرف", areaManager: "مختار", operationManager: "هاني عبدالله" },
+            { name: "النافورة", areaManager: "مختار", operationManager: "هاني عبدالله" },
+            { name: "القادسية", areaManager: "حجازي", operationManager: "طارق بيومي" },
+            { name: "صباح السالم", areaManager: "ثروت", operationManager: "هاني عبدالله" },
+            { name: "الضباعية", areaManager: "وليد", operationManager: "هاني عبدالله" },
+            { name: "الشرق", areaManager: "وليد", operationManager: "هاني عبدالله" },
+            { name: "الجابرية بنت الديك", areaManager: "مختار", operationManager: "هاني عبدالله" },
+            { name: "الجهراء الزويخ", areaManager: "طارق", operationManager: "طارق بيومي" },
+            { name: "الشويخ واره", areaManager: "حجازي", operationManager: "طارق بيومي" },
+            { name: "السيد ياسين", areaManager: "مختار", operationManager: "هاني عبدالله" },
+            { name: "الفنطاس", areaManager: "وليد", operationManager: "هاني عبدالله" },
+            { name: "السندباد", areaManager: "مختار", operationManager: "هاني عبدالله" },
+            { name: "المطار", areaManager: "حجازي", operationManager: "طارق بيومي" },
+            { name: "المنقف", areaManager: "وليد", operationManager: "هاني عبدالله" },
+            { name: "حولي بارك", areaManager: "حجازي", operationManager: "طارق بيومي" },
+            { name: "الرقة", areaManager: "ثروت", operationManager: "هاني عبدالله" },
+            { name: "الرحاب", areaManager: "عماد", operationManager: "طارق بيومي" },
+            { name: "هدية", areaManager: "ثروت", operationManager: "هاني عبدالله" },
+            { name: "نادي الصليبخات", areaManager: "عماد", operationManager: "طارق بيومي" },
+            { name: "الجهراء الصناعية", areaManager: "حجازي", operationManager: "طارق بيومي" },
+            { name: "الفروانية", areaManager: "عماد", operationManager: "طارق بيومي" },
+            { name: "أسواق القرين", areaManager: "انور", operationManager: "طارق بيومي" },
+            { name: "سلوى", areaManager: "ثروت", operationManager: "هاني عبدالله" },
+            { name: "سوق الجليب", areaManager: "طارق", operationManager: "طارق بيومي" },
+            { name: "الشهداء", areaManager: "انور", operationManager: "طارق بيومي" },
+            { name: "الدسمة وبنيد القار", areaManager: "وليد", operationManager: "هاني عبدالله" },
+            { name: "جمعية صباح الاحمد", areaManager: "ثروت", operationManager: "هاني عبدالله" },
+            { name: "الافينيوز", areaManager: "طارق", operationManager: "طارق بيومي" },
+            { name: "الصليبية الصناعية", areaManager: "طارق", operationManager: "طارق بيومي" },
+            { name: "جمعية أبوفطيرة", areaManager: "وليد", operationManager: "هاني عبدالله" },
+            { name: "غرب أبو فطيرة", areaManager: "انور", operationManager: "طارق بيومي" },
+            { name: "خيطان العصيمي", areaManager: "انور", operationManager: "طارق بيومي" },
+            { name: "الوفرة", areaManager: "ثروت", operationManager: "هاني عبدالله" },
+            { name: "جمعية القيروان", areaManager: "طارق", operationManager: "طارق بيومي" },
+            { name: "شرق الاحمدي", areaManager: "ثروت", operationManager: "هاني عبدالله" },
+            { name: "الفروانية فرع 2", areaManager: "عماد", operationManager: "طارق بيومي" },
+            { name: "جمعية الصليبية", areaManager: "طارق", operationManager: "طارق بيومي" },
+            { name: "جمعية الزهراء", areaManager: "انور", operationManager: "طارق بيومي" },
+            { name: "جمعية مدينة جابر الأحمد", areaManager: "عماد", operationManager: "طارق بيومي" },
+            { name: "الخيران أوتليت مول", areaManager: "وليد", operationManager: "هاني عبدالله" },
+            { name: "الخيران أويا مول", areaManager: "وليد", operationManager: "هاني عبدالله" },
+            { name: "الجهراء ليالي الشرق", areaManager: "حجازي", operationManager: "طارق بيومي" },
+            { name: "الجهراء مجمع مكة", areaManager: "طارق", operationManager: "طارق بيومي" },
+            { name: "العارضية الجديد", areaManager: "عماد", operationManager: "طارق بيومي" },
+            { name: "الري", areaManager: "مختار", operationManager: "هاني عبدالله" },
+            { name: "مارينا مول", areaManager: "مختار", operationManager: "هاني عبدالله" },
+            { name: "صباح السالم (العرين)", areaManager: "ثروت", operationManager: "هاني عبدالله" },
+            { name: "مول 360", areaManager: "انور", operationManager: "طارق بيومي" },
+            { name: "الخيول", areaManager: "ثروت", operationManager: "هاني عبدالله" },
+            { name: "مجمع الكوت", areaManager: "وليد", operationManager: "هاني عبدالله" },
+            { name: "كبد", areaManager: "طارق", operationManager: "طارق بيومي" },
+            { name: "سعد العبدالله", areaManager: "مختار", operationManager: "هاني عبدالله" }
+        ];
+
+        // بيانات نموذج التقييم
+        const evaluationData = {
+            service: [
+                { id: "1.1", name: "الزي الموحد", maxScore: 15 },
+                { id: "1.2", name: "الترحيب بالعملاء", maxScore: 25 },
+                { id: "1.3", name: "الاقتراحات", maxScore: 20 },
+                { id: "1.4", name: "شكر العميل", maxScore: 20 },
+                { id: "1.5", name: "وقت الخدمة", maxScore: 35 },
+                { id: "1.6", name: "طريقة الحديث", maxScore: 25 },
+                { id: "1.7", name: "توفر النقدية", maxScore: 15 },
+                { id: "1.8", name: "تجهيز الطاولات", maxScore: 20 },
+                { id: "1.9", name: "تكرار الطلب", maxScore: 15 },
+                { id: "1.10", name: "إصدار الفاتورة", maxScore: 10 }
+            ],
+            cleanliness: [
+                { id: "2.1", name: "اللافتات الخارجية", maxScore: 25 },
+                { id: "2.2", name: "الأبواب والنوافذ", maxScore: 30 },
+                { id: "2.3", name: "حاويات القمامة", maxScore: 35 },
+                { id: "2.4", name: "الصالة/الأرضية/الجدران", maxScore: 40 },
+                { id: "2.5", name: "الطاولات والكراسي والديكور", maxScore: 35 },
+                { id: "2.6", name: "القمامة/مبيد الحشرات", maxScore: 30 },
+                { id: "2.7", name: "الحمامات", maxScore: 40 },
+                { id: "2.8", name: "قائمة الأسعار/الكاونتر", maxScore: 20 },
+                { id: "2.9", name: "الثلاجات والبرادات", maxScore: 25 },
+                { id: "2.10", name: "المطبخ/المغاسل", maxScore: 20 }
+            ],
+            equipment: [
+                { id: "3.1", name: "الشاورما/الشواية", maxScore: 30 },
+                { id: "3.2", name: "المخزن", maxScore: 25 },
+                { id: "3.3", name: "الشواية", maxScore: 35 },
+                { id: "3.4", name: "ثلاجة المشروبات/ماكينة بيبسي", maxScore: 30 },
+                { id: "3.5", name: "الميكروويف", maxScore: 20 },
+                { id: "3.6", name: "الشفاطات/الفلاتر", maxScore: 35 },
+                { id: "3.7", name: "سيارات التوصيل", maxScore: 25 },
+                { id: "3.8", name: "خبز التوست/أدوات البرياني", maxScore: 20 },
+                { id: "3.9", name: "طاولة التحضير والتقطيع", maxScore: 20 },
+                { id: "3.10", name: "ماكينة بنت الديك", maxScore: 10 }
+            ],
+            management: [
+                { id: "4.1", name: "المحاسب/الكاشير", maxScore: 30 },
+                { id: "4.2", name: "فلاتر المياه", maxScore: 35 },
+                { id: "4.3", name: "المنهول", maxScore: 15 },
+                { id: "4.4", name: "المكيف", maxScore: 40 },
+                { id: "4.5", name: "شاشة العرض", maxScore: 20 },
+                { id: "4.6", name: "رخصة المطعم", maxScore: 30 },
+                { id: "4.7", name: "كروت الصحة", maxScore: 30 },
+                { id: "4.8", name: "تقرير المطعم", maxScore: 20 },
+                { id: "4.9", name: "حضور الموظفين", maxScore: 20 },
+                { id: "4.10", name: "درجة حرارة الثلاجة", maxScore: 10 }
+            ],
+            quality: [
+                { id: "5.1", name: "جودة الخبز", maxScore: 25 },
+                { id: "5.2", name: "جودة الدجاج", maxScore: 30 },
+                { id: "5.3", name: "جودة الخضروات", maxScore: 25 },
+                { id: "5.4", name: "جودة/كمية السلطات", maxScore: 20 },
+                { id: "5.5", name: "كمية الطعام", maxScore: 25 },
+                { id: "5.6", name: "استخدام البلو فلام", maxScore: 15 },
+                { id: "5.7", name: "توقيت الطهي", maxScore: 20 },
+                { id: "5.8", name: "جودة الخلط", maxScore: 20 },
+                { id: "5.9", name: "أوراق المطعم", maxScore: 15 },
+                { id: "5.10", name: "وجبات مهدرة", maxScore: 20 },
+                { id: "5.11", name: "الدخول والخروج", maxScore: 15 }
+            ]
+        };
+
+        // تهيئة النموذج
+        function initializeForm() {
+            // تحديث لوحة التحكم
+            updateDashboard();
+            
+            // تهيئة البحث الديناميكي عن المطاعم
+            setupRestaurantSearch();
+            
+            // ملء معايير التقييم
+            fillCriteriaTable('service-criteria', evaluationData.service);
+            fillCriteriaTable('cleanliness-criteria', evaluationData.cleanliness);
+            fillCriteriaTable('equipment-criteria', evaluationData.equipment);
+            fillCriteriaTable('management-criteria', evaluationData.management);
+            fillCriteriaTable('quality-criteria', evaluationData.quality);
+            
+            // إضافة مستمعين للأحداث لحساب النتائج تلقائياً
+            document.querySelectorAll('.score-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    calculateResults();
+                });
+            });
+            
+            document.querySelectorAll('.not-available-checkbox').forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    const itemId = this.getAttribute('data-id').replace('na-', 'score-');
+                    const scoreBtn = document.querySelector(`button[data-id="${itemId}"]`);
+                    const hiddenInput = document.getElementById(itemId);
+                    
+                    if (this.checked) {
+                        // إذا تم تحديد "غير متوفر"، ضع الدرجة 0
+                        scoreBtn.textContent = '0';
+                        scoreBtn.classList.remove('active');
+                        if (hiddenInput) hiddenInput.value = '0';
+                    }
+                    calculateResults();
+                });
+            });
+            
+            // حساب النتائج الأولية
+            calculateResults();
+        }
+
+        // تحديث لوحة التحكم
+        function updateDashboard() {
+            const today = new Date();
+            const month = today.getMonth() + 1; // JavaScript months are 0-indexed
+            const year = today.getFullYear();
+            document.getElementById('dashboard-date').textContent = `${year}-${month.toString().padStart(2, '0')}`;
+            document.getElementById('dashboard-restaurants').textContent = restaurantsData.length;
+        }
+
+        // إعداد البحث الديناميكي عن المطاعم
+        function setupRestaurantSearch() {
+            const searchInput = document.getElementById('restaurant-search');
+            const dropdown = document.getElementById('restaurant-dropdown');
+            const selectedRestaurantInput = document.getElementById('selected-restaurant');
+            
+            // ملء القائمة المنسدلة
+            restaurantsData.forEach(restaurant => {
+                const item = document.createElement('div');
+                item.className = 'restaurant-dropdown-item';
+                item.textContent = restaurant.name;
+                item.addEventListener('click', function() {
+                    searchInput.value = restaurant.name;
+                    selectedRestaurantInput.value = restaurant.name;
+                    updateRestaurantDetails();
+                    dropdown.style.display = 'none';
+                });
+                dropdown.appendChild(item);
+            });
+            
+            // البحث الديناميكي
+            searchInput.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+                const items = dropdown.querySelectorAll('.restaurant-dropdown-item');
+                let hasMatches = false;
+                
+                items.forEach(item => {
+                    if (item.textContent.toLowerCase().includes(searchTerm)) {
+                        item.style.display = 'block';
+                        hasMatches = true;
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+                
+                if (searchTerm && hasMatches) {
+                    dropdown.style.display = 'block';
+                } else {
+                    dropdown.style.display = 'none';
+                }
+                
+                // إذا كان النص مطابقاً تماماً لمطعم
+                const exactMatch = restaurantsData.find(r => r.name.toLowerCase() === searchTerm);
+                if (exactMatch) {
+                    selectedRestaurantInput.value = exactMatch.name;
+                    updateRestaurantDetails();
+                } else if (!searchTerm) {
+                    selectedRestaurantInput.value = '';
+                    updateRestaurantDetails();
+                }
+            });
+            
+            // إغلاق القائمة عند النقر خارجها
+            document.addEventListener('click', function(e) {
+                if (!searchInput.contains(e.target) && !dropdown.contains(e.target)) {
+                    dropdown.style.display = 'none';
+                }
+            });
+        }
+
+        // تحديث تفاصيل المطعم
+        function updateRestaurantDetails() {
+            const selectedRestaurant = document.getElementById('selected-restaurant').value;
+            
+            if (selectedRestaurant) {
+                const restaurant = restaurantsData.find(r => r.name === selectedRestaurant);
+                if (restaurant) {
+                    document.getElementById('area-manager').textContent = restaurant.areaManager;
+                    document.getElementById('operation-manager').textContent = restaurant.operationManager;
+                }
+            } else {
+                document.getElementById('area-manager').textContent = '-';
+                document.getElementById('operation-manager').textContent = '-';
+            }
+        }
+
+        // ملء جدول المعايير
+        function fillCriteriaTable(tableId, criteria) {
+            const tableBody = document.getElementById(tableId);
+            tableBody.innerHTML = '';
+            
+            criteria.forEach(item => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td class="criteria-number">${item.id}</td>
+                    <td class="criteria-name">${item.name}</td>
+                    <td class="max-score">${item.maxScore}</td>
+                    <td class="achieved-score">
+                        <button type="button" class="score-btn" data-id="score-${item.id}" data-max="${item.maxScore}">0</button>
+                        <input type="hidden" id="score-${item.id}" value="0">
+                    </td>
+                    <td class="not-available">
+                        <input type="checkbox" class="not-available-checkbox" data-id="na-${item.id}">
+                    </td>
+                    <td class="notes">
+                        <input type="text" id="notes-${item.id}" placeholder="أضف ملاحظاتك هنا">
+                    </td>
+                `;
+                tableBody.appendChild(row);
+                
+                // إضافة حدث النقر على زر الدرجة
+                const scoreBtn = row.querySelector('.score-btn');
+                scoreBtn.addEventListener('click', function() {
+                    const notAvailableCheckbox = row.querySelector('.not-available-checkbox');
+                    
+                    // إذا كان العنصر غير متوفر، لا يمكن تغيير الدرجة
+                    if (notAvailableCheckbox && notAvailableCheckbox.checked) {
+                        alert('لا يمكن تعديل درجة عنصر غير متوفر. يرجى إلغاء تحديد "غير متوفر" أولاً.');
+                        return;
+                    }
+                    
+                    const currentScore = parseInt(this.textContent) || 0;
+                    const maxScore = parseInt(this.getAttribute('data-max'));
+                    const newScore = currentScore === maxScore ? 0 : maxScore;
+                    this.textContent = newScore;
+                    this.classList.toggle('active', newScore === maxScore);
+                    
+                    // تحديث الحقل المخفي
+                    const hiddenInput = document.getElementById(this.getAttribute('data-id'));
+                    if (hiddenInput) {
+                        hiddenInput.value = newScore;
+                    }
+                    
+                    calculateResults();
+                });
+            });
+        }
+
+        // حساب النتائج
+        function calculateResults() {
+            let totalAchieved = 0;
+            let totalMax = 0;
+            const results = [];
+            
+            // حساب لكل محور
+            const categories = [
+                { id: 'service', name: 'خدمة العملاء', maxTotal: 200 },
+                { id: 'cleanliness', name: 'النظافة', maxTotal: 300 },
+                { id: 'equipment', name: 'المعدات والتجهيزات', maxTotal: 250 },
+                { id: 'management', name: 'إدارة المطعم', maxTotal: 250 },
+                { id: 'quality', name: 'الجودة', maxTotal: 250 }
+            ];
+            
+            categories.forEach(category => {
+                let achieved = 0;
+                let availableMax = 0; // للعناصر المتوفرة فقط
+                
+                evaluationData[category.id].forEach(item => {
+                    const notAvailableCheckbox = document.querySelector(`input[data-id="na-${item.id}"]`);
+                    const isNotAvailable = notAvailableCheckbox && notAvailableCheckbox.checked;
+                    
+                    if (!isNotAvailable) {
+                        availableMax += item.maxScore;
+                        
+                        const scoreInput = document.getElementById(`score-${item.id}`);
+                        const score = parseInt(scoreInput.value) || 0;
+                        
+                        // التأكد من أن الدرجة المحققة لا تتجاوز الدرجة القصوى
+                        if (score > item.maxScore) {
+                            scoreInput.value = item.maxScore;
+                            achieved += item.maxScore;
+                        } else {
+                            achieved += score;
+                        }
+                    }
+                });
+                
+                // إذا كانت هناك عناصر غير متوفرة، نعدل الدرجة القصوى
+                const adjustedMax = availableMax > 0 ? availableMax : 0;
+                
+                totalAchieved += achieved;
+                totalMax += adjustedMax;
+                
+                const percentage = adjustedMax > 0 ? Math.round((achieved / adjustedMax) * 100) : 0;
+                results.push({
+                    id: category.id,
+                    name: category.name,
+                    maxScore: adjustedMax,
+                    achievedScore: achieved,
+                    percentage: percentage,
+                    originalMax: category.maxTotal
+                });
+                
+                // تحديث المربعات في المخطط (للمحاور الأربعة الأولى فقط)
+                if (category.id !== 'quality') {
+                    updateDiagramBox(category.id, achieved, adjustedMax);
+                }
+            });
+            
+            // حساب النسبة الإجمالية
+            const totalPercentage = totalMax > 0 ? Math.round((totalAchieved / totalMax) * 100) : 0;
+            
+            // تحديث الكروت الإحصائية
+            updateStatsCards(totalAchieved, totalPercentage, totalMax);
+            
+            // تحديث لوحة التحكم
+            updateDashboardCards(totalAchieved, totalPercentage);
+            
+            // تحديث جدول النتائج
+            updateResultsTable(results, totalAchieved, totalPercentage, totalMax);
+            
+            // تحديث التقييم النهائي
+            updateFinalEvaluation(totalPercentage, totalAchieved, totalMax);
+        }
+
+        // تحديث المربعات في المخطط
+        function updateDiagramBox(categoryId, achieved, max) {
+            const boxElement = document.getElementById(`${categoryId}-box`);
+            if (boxElement) {
+                const scoreElement = boxElement.querySelector('.axis-score');
+                const totalElement = boxElement.querySelector('.axis-total');
+                
+                if (scoreElement) scoreElement.textContent = achieved;
+                if (totalElement) totalElement.textContent = `من ${max}`;
+                
+                // تحديث لون المربع بناءً على النسبة
+                const percentage = max > 0 ? Math.round((achieved / max) * 100) : 0;
+                boxElement.style.borderColor = getPercentageColorForDiagram(percentage);
+            }
+        }
+
+        // تحديث الكروت الإحصائية
+        function updateStatsCards(totalAchieved, totalPercentage, totalMax) {
+            document.getElementById('total-score').textContent = totalAchieved;
+            document.getElementById('total-percentage').textContent = totalPercentage + '%';
+            
+            // حساب درجة الجودة (المتبقي)
+            const qualityScore = totalMax - totalAchieved;
+            document.getElementById('quality-score').textContent = qualityScore;
+            
+            // تحديث لون الكروت حسب النسبة
+            const statCards = document.querySelectorAll('.stat-card');
+            statCards.forEach(card => {
+                card.classList.remove('red', 'yellow', 'green', 'gold');
+                
+                if (totalPercentage < 75) {
+                    card.classList.add('red');
+                    document.getElementById('final-grade').textContent = '🔴 تدخل';
+                } else if (totalPercentage >= 75 && totalPercentage < 85) {
+                    card.classList.add('yellow');
+                    document.getElementById('final-grade').textContent = '🟡 متابعة';
+                } else if (totalPercentage >= 85 && totalPercentage < 90) {
+                    card.classList.add('green');
+                    document.getElementById('final-grade').textContent = '🟢 جيد';
+                } else if (totalPercentage >= 90) {
+                    card.classList.add('gold');
+                    document.getElementById('final-grade').textContent = '🟡✨ ممتاز';
+                }
+            });
+        }
+
+        // تحديث كروت لوحة التحكم
+        function updateDashboardCards(totalAchieved, totalPercentage) {
+            document.getElementById('dashboard-total').textContent = totalAchieved;
+            document.getElementById('dashboard-percentage').textContent = totalPercentage + '%';
+        }
+
+        // تحديث جدول النتائج
+        function updateResultsTable(results, totalAchieved, totalPercentage, totalMax) {
+            const resultsBody = document.getElementById('results-body');
+            resultsBody.innerHTML = '';
+            
+            // إضافة صفوف النتائج لكل محور
+            results.forEach(result => {
+                const row = document.createElement('tr');
+                const colorClass = getPercentageColorClass(result.percentage);
+                const circleColor = getPercentageColorForCircle(result.percentage);
+                
+                row.innerHTML = `
+                    <td>${result.name}</td>
+                    <td>${result.maxScore}</td>
+                    <td>${result.achievedScore}</td>
+                    <td class="percentage-cell" style="background-color: ${getPercentageColor(result.percentage)};">${result.percentage}%</td>
+                    <td>
+                        <div class="final-evaluation-circle" style="background-color: ${circleColor}; width: 40px; height: 40px; font-size: 14px;">
+                            ${result.percentage}%
+                        </div>
+                    </td>
+                `;
+                resultsBody.appendChild(row);
+            });
+            
+            // إضافة صف الإجمالي
+            const totalRow = document.createElement('tr');
+            totalRow.classList.add('total-row');
+            const totalColor = getPercentageColor(totalPercentage);
+            const totalCircleColor = getPercentageColorForCircle(totalPercentage);
+            
+            totalRow.innerHTML = `
+                <td><strong>الإجمالي (1-5)</strong></td>
+                <td><strong>${totalMax}</strong></td>
+                <td><strong>${totalAchieved}</strong></td>
+                <td class="percentage-cell" style="background-color: ${totalColor};"><strong>${totalPercentage}%</strong></td>
+                <td>
+                    <div class="final-evaluation-circle" style="background-color: ${totalCircleColor}; width: 50px; height: 50px; font-size: 16px;">
+                        ${totalPercentage}%
+                    </div>
+                </td>
+            `;
+            resultsBody.appendChild(totalRow);
+            
+            // تحديث نتيجة الإجمالي
+            document.getElementById('total-score-result').textContent = totalAchieved;
+            document.getElementById('total-max-result').textContent = totalMax;
+        }
+
+        // تحديث التقييم النهائي
+        function updateFinalEvaluation(percentage, totalAchieved, totalMax) {
+            const evaluationText = document.getElementById('evaluation-text');
+            const finalEvaluation = document.getElementById('final-evaluation');
+            const finalCircle = document.getElementById('final-circle');
+            
+            let color, text, circleColor;
+            
+            if (percentage < 75) {
+                text = 'أحمر - يحتاج تدخل فوري';
+                color = '#e74c3c';
+                circleColor = '#e74c3c';
+                finalEvaluation.style.backgroundColor = '#ffeaea';
+                finalEvaluation.style.color = '#e74c3c';
+            } else if (percentage >= 75 && percentage < 85) {
+                text = 'أصفر - يحتاج متابعة';
+                color = '#f39c12';
+                circleColor = '#f39c12';
+                finalEvaluation.style.backgroundColor = '#fff9e6';
+                finalEvaluation.style.color = '#f39c12';
+            } else if (percentage >= 85 && percentage < 90) {
+                text = 'أخضر - أداء جيد';
+                color = '#27ae60';
+                circleColor = '#27ae60';
+                finalEvaluation.style.backgroundColor = '#e8f7ef';
+                finalEvaluation.style.color = '#27ae60';
+            } else if (percentage >= 90) {
+                text = 'ذهبي - أداء ممتاز';
+                color = '#b8860b';
+                circleColor = '#ffd700';
+                finalEvaluation.style.backgroundColor = '#fffce6';
+                finalEvaluation.style.color = '#b8860b';
+            }
+            
+            evaluationText.textContent = text;
+            evaluationText.style.color = color;
+            
+            // تحديث الدائرة
+            if (finalCircle) {
+                finalCircle.style.backgroundColor = circleColor;
+                finalCircle.textContent = percentage + '%';
+                finalCircle.style.color = 'white';
+            }
+        }
+
+        // الحصول على لون النسبة المئوية
+        function getPercentageColor(percentage) {
+            if (percentage < 75) return '#ffeaea';
+            if (percentage >= 75 && percentage < 85) return '#fff9e6';
+            if (percentage >= 85 && percentage < 90) return '#e8f7ef';
+            return '#fffce6';
+        }
+
+        // الحصول على لون النسبة المئوية للمخطط
+        function getPercentageColorForDiagram(percentage) {
+            if (percentage < 75) return '#e74c3c';
+            if (percentage >= 75 && percentage < 85) return '#f39c12';
+            if (percentage >= 85 && percentage < 90) return '#27ae60';
+            return '#ffd700';
+        }
+
+        // الحصول على لون الدائرة للنسبة المئوية
+        function getPercentageColorForCircle(percentage) {
+            if (percentage < 75) return '#e74c3c';
+            if (percentage >= 75 && percentage < 85) return '#f39c12';
+            if (percentage >= 85 && percentage < 90) return '#27ae60';
+            return '#ffd700';
+        }
+
+        // الحصول على فئة اللون للنسبة المئوية
+        function getPercentageColorClass(percentage) {
+            if (percentage < 75) return 'red';
+            if (percentage >= 75 && percentage < 85) return 'yellow';
+            if (percentage >= 85 && percentage < 90) return 'green';
+            return 'gold';
+        }
+
+        // حفظ التقرير كملف PDF
+        async function saveAsPDF() {
+            if (!window.jspdf) {
+                alert('مكتبة PDF غير محملة. يرجى التحقق من الاتصال بالإنترنت.');
+                return;
+            }
+            
+            try {
+                // حساب النتائج أولاً
+                calculateResults();
+                
+                // تحضير بيانات PDF
+                const today = new Date();
+                const formattedDate = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+                document.getElementById('pdf-date').textContent = formattedDate;
+                
+                // إضافة اسم المطعم والمعلومات
+                const selectedRestaurant = document.getElementById('selected-restaurant').value;
+                document.getElementById('pdf-restaurant').textContent = selectedRestaurant || 'غير محدد';
+                
+                const restaurant = restaurantsData.find(r => r.name === selectedRestaurant);
+                if (restaurant) {
+                    document.getElementById('pdf-area-manager').textContent = restaurant.areaManager;
+                    document.getElementById('pdf-operation-manager').textContent = restaurant.operationManager;
+                } else {
+                    document.getElementById('pdf-area-manager').textContent = '-';
+                    document.getElementById('pdf-operation-manager').textContent = '-';
+                }
+                
+                document.getElementById('pdf-evaluator').textContent = document.getElementById('evaluator-name').value || 'غير محدد';
+                
+                // حساب النتائج الإجمالية
+                const totalAchieved = parseInt(document.getElementById('total-score').textContent);
+                const totalPercentage = parseInt(document.getElementById('total-percentage').textContent);
+                const totalMax = parseInt(document.getElementById('total-max-result').textContent);
+                const evaluationText = document.getElementById('evaluation-text').textContent;
+                
+                document.getElementById('pdf-summary').innerHTML = `
+                    <div>إجمالي الدرجات: <strong>${totalAchieved}</strong> من <strong>${totalMax}</strong> درجة</div>
+                    <div>النسبة المئوية: <strong>${totalPercentage}%</strong></div>
+                `;
+                
+                // إعداد مخطط PDF مبسط
+                const pdfDiagram = document.getElementById('pdf-diagram');
+                pdfDiagram.innerHTML = `
+                    <div style="position: relative; width: 300px; height: 150px; margin: 0 auto;">
+                        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 80px; height: 80px; background: linear-gradient(135deg, #FFD700, #D4AF37); border-radius: 50%; display: flex; justify-content: center; align-items: center; color: white; font-weight: bold; font-size: 12px; text-align: center; border: 3px solid white; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
+                            الهدف:<br>الجودة
+                        </div>
+                        <div style="position: absolute; top: 20px; right: 20px; width: 70px; height: 50px; background: white; border-radius: 5px; border: 2px solid #D4AF37; display: flex; flex-direction: column; justify-content: center; align-items: center; font-size: 10px; padding: 5px;">
+                            <div style="font-weight: bold;">خدمة العملاء</div>
+                            <div style="font-size: 12px; font-weight: bold;">${document.querySelector('#service-box .axis-score').textContent}</div>
+                            <div>من ${document.querySelector('#service-box .axis-total').textContent.replace('من ', '')}</div>
+                        </div>
+                        <div style="position: absolute; top: 20px; left: 20px; width: 70px; height: 50px; background: white; border-radius: 5px; border: 2px solid #FFD700; display: flex; flex-direction: column; justify-content: center; align-items: center; font-size: 10px; padding: 5px;">
+                            <div style="font-weight: bold;">النظافة</div>
+                            <div style="font-size: 12px; font-weight: bold;">${document.querySelector('#cleanliness-box .axis-score').textContent}</div>
+                            <div>من ${document.querySelector('#cleanliness-box .axis-total').textContent.replace('من ', '')}</div>
+                        </div>
+                        <div style="position: absolute; bottom: 20px; right: 20px; width: 70px; height: 50px; background: white; border-radius: 5px; border: 2px solid #B8860B; display: flex; flex-direction: column; justify-content: center; align-items: center; font-size: 10px; padding: 5px;">
+                            <div style="font-weight: bold;">التجهيزات</div>
+                            <div style="font-size: 12px; font-weight: bold;">${document.querySelector('#equipment-box .axis-score').textContent}</div>
+                            <div>من ${document.querySelector('#equipment-box .axis-total').textContent.replace('من ', '')}</div>
+                        </div>
+                        <div style="position: absolute; bottom: 20px; left: 20px; width: 70px; height: 50px; background: white; border-radius: 5px; border: 2px solid #FFC107; display: flex; flex-direction: column; justify-content: center; align-items: center; font-size: 10px; padding: 5px;">
+                            <div style="font-weight: bold;">الإدارة</div>
+                            <div style="font-size: 12px; font-weight: bold;">${document.querySelector('#management-box .axis-score').textContent}</div>
+                            <div>من ${document.querySelector('#management-box .axis-total').textContent.replace('من ', '')}</div>
+                        </div>
+                    </div>
+                `;
+                
+                // إعداد جدول النتائج في PDF
+                const pdfResultsBody = document.getElementById('pdf-results-body');
+                pdfResultsBody.innerHTML = '';
+                
+                const categories = ['خدمة العملاء', 'النظافة', 'المعدات والتجهيزات', 'إدارة المطعم', 'الجودة'];
+                
+                // حساب الدرجات المحققة لكل محور
+                let totalAchievedForPDF = 0;
+                let totalMaxForPDF = 0;
+                
+                categories.forEach((category, index) => {
+                    let achieved = 0;
+                    let availableMax = 0;
+                    const categoryData = evaluationData[Object.keys(evaluationData)[index]];
+                    
+                    categoryData.forEach(item => {
+                        const notAvailableCheckbox = document.querySelector(`input[data-id="na-${item.id}"]`);
+                        const isNotAvailable = notAvailableCheckbox && notAvailableCheckbox.checked;
+                        
+                        if (!isNotAvailable) {
+                            availableMax += item.maxScore;
+                            const scoreInput = document.getElementById(`score-${item.id}`);
+                            achieved += parseInt(scoreInput.value) || 0;
+                        }
+                    });
+                    
+                    totalAchievedForPDF += achieved;
+                    totalMaxForPDF += availableMax;
+                    const percentage = availableMax > 0 ? Math.round((achieved / availableMax) * 100) : 0;
+                    
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td style="padding: 6px; border: 1px solid #000; text-align: center;">${category}</td>
+                        <td style="padding: 6px; border: 1px solid #000; text-align: center;">${availableMax}</td>
+                        <td style="padding: 6px; border: 1px solid #000; text-align: center;">${achieved}</td>
+                        <td style="padding: 6px; border: 1px solid #000; text-align: center; background-color: ${getPercentageColor(percentage)}; color: black;">${percentage}%</td>
+                    `;
+                    pdfResultsBody.appendChild(row);
+                });
+                
+                // إضافة صف الإجمالي
+                const totalRow = document.createElement('tr');
+                totalRow.innerHTML = `
+                    <td style="padding: 6px; border: 1px solid #000; text-align: center; font-weight: bold;">الإجمالي</td>
+                    <td style="padding: 6px; border: 1px solid #000; text-align: center; font-weight: bold;">${totalMaxForPDF}</td>
+                    <td style="padding: 6px; border: 1px solid #000; text-align: center; font-weight: bold;">${totalAchievedForPDF}</td>
+                    <td style="padding: 6px; border: 1px solid #000; text-align: center; font-weight: bold; background-color: ${getPercentageColor(totalPercentage)}; color: black;">${totalPercentage}%</td>
+                `;
+                pdfResultsBody.appendChild(totalRow);
+                
+                // إضافة التقييم النهائي مع الدائرة الملونة
+                const finalCircleColor = getPercentageColorForCircle(totalPercentage);
+                document.getElementById('pdf-final-evaluation').innerHTML = `
+                    <div>${evaluationText}</div>
+                `;
+                
+                // تحديث الدائرة الملونة في PDF
+                const pdfFinalCircle = document.getElementById('pdf-final-circle');
+                pdfFinalCircle.style.backgroundColor = finalCircleColor;
+                pdfFinalCircle.textContent = totalPercentage + '%';
+                pdfFinalCircle.style.color = 'white';
+                
+                // إعداد العنصر للتصوير
+                const element = document.getElementById('pdf-template');
+                const originalStyles = {
+                    display: element.style.display,
+                    position: element.style.position,
+                    left: element.style.left,
+                    top: element.style.top,
+                    width: element.style.width,
+                    height: element.style.height,
+                    zIndex: element.style.zIndex
+                };
+                
+                element.style.display = 'block';
+                element.style.position = 'fixed';
+                element.style.left = '0';
+                element.style.top = '0';
+                element.style.width = '794px';
+                element.style.height = '1123px';
+                element.style.zIndex = '10000';
+                element.style.background = 'white';
+                element.style.padding = '20px';
+                
+                // استخدام html2canvas لالتقاط الصورة
+                const canvas = await html2canvas(element, {
+                    scale: 2,
+                    useCORS: true,
+                    logging: false,
+                    backgroundColor: '#FFFFFF',
+                    width: 794,
+                    height: 1123,
+                    windowWidth: 794,
+                    windowHeight: 1123
+                });
+                
+                // إعادة العنصر إلى وضعه الأصلي
+                element.style.display = originalStyles.display;
+                element.style.position = originalStyles.position;
+                element.style.left = originalStyles.left;
+                element.style.top = originalStyles.top;
+                element.style.width = originalStyles.width;
+                element.style.height = originalStyles.height;
+                element.style.zIndex = originalStyles.zIndex;
+                
+                const imgData = canvas.toDataURL('image/jpeg', 0.95);
+                const pdf = new window.jspdf.jsPDF('p', 'pt', 'a4');
+                
+                const imgWidth = pdf.internal.pageSize.getWidth();
+                const imgHeight = (canvas.height * imgWidth) / canvas.width;
+                
+                // إضافة الصورة إلى PDF
+                pdf.addImage(imgData, 'JPEG', 0, 0, imgWidth, imgHeight);
+                
+                // حفظ ملف PDF
+                const restaurantName = selectedRestaurant ? selectedRestaurant.replace(/\s+/g, '_') : 'تقييم';
+                const fileName = `تقييم_${restaurantName}_${formattedDate}.pdf`;
+                pdf.save(fileName);
+                
+            } catch (error) {
+                console.error('Error generating PDF:', error);
+                alert('حدث خطأ أثناء إنشاء ملف PDF: ' + error.message);
+            }
+        }
+
+        // طباعة التقرير
+        function printEvaluation() {
+            calculateResults();
+            window.print();
+        }
+
+        // إعادة تعيين النموذج
+        function resetForm() {
+            if (confirm('هل أنت متأكد من إعادة تعيين جميع البيانات؟')) {
+                document.querySelectorAll('.score-btn').forEach(btn => {
+                    btn.textContent = '0';
+                    btn.classList.remove('active');
+                });
+                
+                document.querySelectorAll('input[type="hidden"]').forEach(input => {
+                    input.value = '0';
+                });
+                
+                document.querySelectorAll('.not-available-checkbox').forEach(checkbox => {
+                    checkbox.checked = false;
+                });
+                
+                document.querySelectorAll('input[type="text"]').forEach(input => {
+                    input.value = '';
+                });
+                
+                document.getElementById('evaluator-name').value = '';
+                document.getElementById('restaurant-search').value = '';
+                document.getElementById('selected-restaurant').value = '';
+                document.getElementById('area-manager').textContent = '-';
+                document.getElementById('operation-manager').textContent = '-';
+                
+                calculateResults();
+            }
+        }
+
+        // تهيئة النموذج عند تحميل الصفحة
+        document.addEventListener('DOMContentLoaded', initializeForm);
+    </script>
+</body>
+</html>
